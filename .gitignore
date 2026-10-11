@@ -1,0 +1,39 @@
+# Environments and Secrets (DO NOT COMMIT)
+.env
+.env.*
+!.env.example
+*.env
+
+# Python Virtual Environments
+.venv/
+venv/
+ENV/
+env/
+env.bak/
+venv.bak/
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Django
+*.sqlite3
+db.sqlite3
+/media
+static_root/
+staticfiles/
+
+# Logs
+*.log
+local_settings.py
+
+# Editor & OS files
+.vscode/
+.idea/
+*.swp
+*.swo
+Thumbs.db
+Desktop.ini
+.DS_Store
