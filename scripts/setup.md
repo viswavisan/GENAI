@@ -26,10 +26,12 @@ ssh -i /path/to/your/private_key opc@129.225.111.80
 ### 1. Update Packages & Install Dependencies
 On Oracle Linux / RHEL / CentOS:
 ```bash
-sudo dnf update -y
 sudo dnf install python3-pip -y
 sudo pip3 install certbot certbot-nginx
-certbot --version
+/usr/local/bin/certbot --version
+
+# (Recommended) Create symlink so you can use 'certbot' from anywhere:
+sudo ln -s /usr/local/bin/certbot /usr/bin/certbot
 ```
 *(On Ubuntu/Debian, use `sudo apt update && sudo apt install -y git python3 python3-venv python3-pip nginx certbot python3-certbot-nginx`)*
 
@@ -179,7 +181,7 @@ Certbot will:
 
 ### Verify Certificate Auto-Renewal
 ```bash
-sudo certbot renew --dry-run
+sudo /usr/local/bin/certbot renew --dry-run
 ```
 
 ---
