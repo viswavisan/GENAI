@@ -10,20 +10,40 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/6.1/ref/settings/
 """
 
+import configparser
+import os
 from pathlib import Path
+from dotenv import load_dotenv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+# Read .env location specified in properties.ini
+props = configparser.ConfigParser()
+props_file = BASE_DIR / 'properties.ini'
+
+if props_file.is_file():
+    props.read(props_file)
+    configured_path = props.get('environment', 'env_file_path', fallback='.env')
+    env_path = Path(configured_path).expanduser()
+    if not env_path.is_absolute():
+        env_path = BASE_DIR / env_path
+    if env_path.is_file():
+        load_dotenv(env_path)
+    else:
+        load_dotenv(BASE_DIR / '.env')
+else:
+    load_dotenv(BASE_DIR / '.env')
 
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/6.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-z+c&fbc%i!(m3@+j1f8&6%9nn@@g_hw0&c#lkxv4gqw6tgi3d7'
+SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'django-insecure-z+c&fbc%i!(m3@+j1f8&6%9nn@@g_hw0&c#lkxv4gqw6tgi3d7')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.getenv('DEBUG', 'True').lower() in ('true', '1', 'yes')
 
 ALLOWED_HOSTS = ['*']
 

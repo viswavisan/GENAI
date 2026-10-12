@@ -8,11 +8,8 @@ Includes:
 import os
 import datetime
 import subprocess
-from dotenv import load_dotenv
 from google import genai
 from google.genai import types
-
-load_dotenv()
 
 MODEL_NAME = os.getenv("GEMINI_MODEL", "gemini-3-flash-preview")
 UNIVERSAL_AGENT_PASSWORD = os.getenv("UNIVERSAL_AGENT_PASSWORD", "admin123")
