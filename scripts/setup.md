@@ -128,7 +128,7 @@ Nginx routes public requests from `genaisample.duckdns.org` on ports 80/443 to t
 ### 1. Place the Nginx Configuration
 On Oracle Linux / RHEL:
 ```bash
-sudo cp /home/opc/GENAI/scripts/nginx.conf /etc/nginx/conf.d/genai.conf
+sudo cp /home/opc/GENAI/scripts/genai.conf /etc/nginx/conf.d/genai.conf
 ```
 *(On Ubuntu/Debian: `sudo cp /home/opc/GENAI/scripts/nginx.conf /etc/nginx/sites-available/genai` followed by `sudo ln -s /etc/nginx/sites-available/genai /etc/nginx/sites-enabled/`)*
 
@@ -168,7 +168,7 @@ sudo systemctl restart nginx
 Once your domain `genaisample.duckdns.org` is pointing to `129.225.111.80` and Nginx is running, obtain free Let's Encrypt certificates:
 
 ```bash
-sudo certbot --nginx -d genaisample.duckdns.org
+sudo /usr/local/bin/certbot --nginx -d genaisample.duckdns.org
 ```
 
 Certbot will:
