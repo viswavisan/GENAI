@@ -1,5 +1,5 @@
 # Django & Web
-Django==6.1.2
+Django==4.2.30
 asgiref==3.12.1
 sqlparse==0.6.0
 tzdata==2026.5
