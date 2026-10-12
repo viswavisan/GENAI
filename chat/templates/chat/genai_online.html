@@ -3,23 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Standard Chat | Online GenAI</title>
+    <title>GenAI Chat (Online) | Gemini</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
-        body { background: #090d16; color: #f8fafc; min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 16px; }
-        .container { width: 100%; max-width: 920px; background: #111827; border-radius: 18px; box-shadow: 0 20px 40px rgba(0,0,0,0.6); display: flex; flex-direction: column; height: 92vh; border: 1px solid #1f2937; overflow: hidden; }
-        header { padding: 16px 24px; background: #131d31; border-bottom: 1px solid #1f2937; display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
-        .brand-area { display: flex; align-items: center; gap: 12px; }
-        .brand-badge { width: 38px; height: 38px; border-radius: 10px; background: linear-gradient(135deg, #38bdf8, #2563eb); display: flex; align-items: center; justify-content: center; font-size: 1.25rem; }
-        .brand-title h1 { font-size: 1.15rem; font-weight: 700; color: #f1f5f9; }
-        .brand-title p { font-size: 0.74rem; color: #94a3b8; }
+        body { background: #090d16; color: #f8fafc; min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 14px; }
+        .container { width: 100%; max-width: 960px; background: #111827; border-radius: 18px; box-shadow: 0 20px 40px rgba(0,0,0,0.6); display: flex; flex-direction: column; height: 92vh; border: 1px solid #1f2937; overflow: hidden; }
         
-        /* Navigation Tabs across all 4 modes */
-        .nav-switch { display: flex; background: #090d16; padding: 4px; border-radius: 10px; border: 1px solid #334155; gap: 4px; flex-wrap: wrap; }
-        .nav-tab { padding: 6px 12px; font-size: 0.78rem; font-weight: 500; border-radius: 7px; text-decoration: none; color: #94a3b8; transition: all 0.2s; }
+        /* Top Navigation Header with Clean Grouping */
+        header { padding: 14px 20px; background: #131d31; border-bottom: 1px solid #1f2937; display: flex; align-items: center; justify-content: space-between; gap: 14px; flex-wrap: wrap; }
+        .brand-area { display: flex; align-items: center; gap: 10px; }
+        .brand-badge { width: 36px; height: 36px; border-radius: 10px; background: linear-gradient(135deg, #38bdf8, #2563eb); display: flex; align-items: center; justify-content: center; font-size: 1.2rem; }
+        .brand-title h1 { font-size: 1.1rem; font-weight: 700; color: #f1f5f9; }
+        .brand-title p { font-size: 0.72rem; color: #94a3b8; }
+        
+        .nav-groups { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+        .nav-category { display: flex; align-items: center; background: #090d16; border: 1px solid #334155; border-radius: 10px; padding: 3px 6px; gap: 4px; }
+        .cat-label { font-size: 0.68rem; font-weight: 700; color: #64748b; text-transform: uppercase; margin-right: 4px; padding-left: 4px; }
+        .nav-tab { padding: 5px 10px; font-size: 0.76rem; font-weight: 500; border-radius: 6px; text-decoration: none; color: #94a3b8; transition: all 0.2s; white-space: nowrap; }
         .nav-tab:hover { color: #f8fafc; }
         .nav-tab.active { background: #2563eb; color: #ffffff; font-weight: 600; box-shadow: 0 2px 8px rgba(37, 99, 235, 0.4); }
 
@@ -54,29 +57,40 @@
     <div class="container">
         <header>
             <div class="brand-area">
-                <div class="brand-badge">✨</div>
+                <div class="brand-badge">💬</div>
                 <div class="brand-title">
                     <h1>GenAI Studio</h1>
-                    <p>Standard Generative Chat</p>
+                    <p>Conversational LLM & Agentic AI</p>
                 </div>
             </div>
 
-            <div class="nav-switch">
-                <a href="/chat/" class="nav-tab active">💬 Standard Chat</a>
-                <a href="/chat/offline/" class="nav-tab">🦙 Offline Model</a>
-                <a href="/chat/limited-agent/" class="nav-tab">🛠️ Limited Agent</a>
-                <a href="/chat/universal-agent/" class="nav-tab">💻 Universal Agent</a>
-            </div>
+            <!-- Grouped Navigation -->
+            <nav class="nav-groups">
+                <div class="nav-category">
+                    <span class="cat-label">GenAI:</span>
+                    <a href="/chat/" class="nav-tab active">🌐 Online</a>
+                    <a href="/chat/offline/" class="nav-tab">🦙 Offline</a>
+                </div>
+                <div class="nav-category">
+                    <span class="cat-label">Agentic Online:</span>
+                    <a href="/chat/agent/limited/" class="nav-tab">🛠️ Limited</a>
+                    <a href="/chat/agent/universal/" class="nav-tab">💻 Universal</a>
+                </div>
+                <div class="nav-category">
+                    <span class="cat-label">Agentic Offline:</span>
+                    <a href="/chat/agent/offline/" class="nav-tab">🛡️ Local Agent</a>
+                </div>
+            </nav>
         </header>
 
         <div class="banner">
-            <span>🌐 <strong>Online Mode:</strong> Powered by Google Gemini. Pure conversational AI without tool execution.</span>
+            <span>🌐 <strong>GenAI Chat (Online):</strong> Pure conversational AI powered by Google Gemini without external tools.</span>
             <span class="banner-tag">Google Gemini</span>
         </div>
 
         <div id="chatBox">
             <div class="msg-group ai">
-                <div class="bubble">Hello! I am your online AI assistant powered by Google Gemini. Ask me questions, brainstorm ideas, or generate code!</div>
+                <div class="bubble">Hello! I am your online AI assistant powered by Google Gemini. Ask me questions, brainstorm ideas, write stories, or generate code!</div>
             </div>
             <div id="loading" class="typing-loader">Thinking...</div>
         </div>
