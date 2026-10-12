@@ -1,0 +1,14 @@
+
+[Unit]
+Description=GENAI API Service
+After=network.target
+
+[Service]
+User=opc
+WorkingDirectory=/home/opc/GENAI
+ExecStart=/home/opc/GENAI/venv/bin/python3 /home/opc/GENAI/manage.py runserver 0.0.0.0:8080
+Restart=always
+Environment="PATH=/home/opc/GENAI/venv/bin"
+
+[Install]
+WantedBy=multi-user.target
