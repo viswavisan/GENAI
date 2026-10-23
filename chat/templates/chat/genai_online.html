@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,51 +9,294 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
-        body { background: #090d16; color: #f8fafc; min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 14px; }
-        .container { width: 100%; max-width: 960px; background: #111827; border-radius: 18px; box-shadow: 0 20px 40px rgba(0,0,0,0.6); display: flex; flex-direction: column; height: 92vh; border: 1px solid #1f2937; overflow: hidden; }
-        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        body {
+            background: #090d16;
+            color: #f8fafc;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 14px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1160px;
+            background: #111827;
+            border-radius: 18px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+            display: flex;
+            flex-direction: column;
+            height: 92vh;
+            border: 1px solid #1f2937;
+            overflow: hidden;
+        }
+
         /* Top Navigation Header with Clean Grouping */
-        header { padding: 14px 20px; background: #131d31; border-bottom: 1px solid #1f2937; display: flex; align-items: center; justify-content: space-between; gap: 14px; flex-wrap: wrap; }
-        .brand-area { display: flex; align-items: center; gap: 10px; }
-        .brand-badge { width: 36px; height: 36px; border-radius: 10px; background: linear-gradient(135deg, #38bdf8, #2563eb); display: flex; align-items: center; justify-content: center; font-size: 1.2rem; }
-        .brand-title h1 { font-size: 1.1rem; font-weight: 700; color: #f1f5f9; }
-        .brand-title p { font-size: 0.72rem; color: #94a3b8; }
-        
-        .nav-groups { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
-        .nav-category { display: flex; align-items: center; background: #090d16; border: 1px solid #334155; border-radius: 10px; padding: 3px 6px; gap: 4px; }
-        .cat-label { font-size: 0.68rem; font-weight: 700; color: #64748b; text-transform: uppercase; margin-right: 4px; padding-left: 4px; }
-        .nav-tab { padding: 5px 10px; font-size: 0.76rem; font-weight: 500; border-radius: 6px; text-decoration: none; color: #94a3b8; transition: all 0.2s; white-space: nowrap; }
-        .nav-tab:hover { color: #f8fafc; }
-        .nav-tab.active { background: #2563eb; color: #ffffff; font-weight: 600; box-shadow: 0 2px 8px rgba(37, 99, 235, 0.4); }
+        header {
+            padding: 14px 20px 12px 20px;
+            background: #131d31;
+            border-bottom: 1px solid #1f2937;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
 
-        .banner { background: rgba(56, 189, 248, 0.08); border-bottom: 1px solid #1f2937; padding: 10px 24px; font-size: 0.8rem; color: #7dd3fc; display: flex; justify-content: space-between; align-items: center; }
-        .banner-tag { background: rgba(56, 189, 248, 0.15); border: 1px solid #0284c7; padding: 2px 8px; border-radius: 999px; font-size: 0.7rem; font-weight: 600; }
+        .brand-area {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
 
-        #chatBox { flex: 1; overflow-y: auto; padding: 24px; display: flex; flex-direction: column; gap: 16px; }
-        .msg-group { display: flex; flex-direction: column; max-width: 82%; animation: fadeIn 0.2s ease; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
-        .msg-group.user { align-self: flex-end; align-items: flex-end; }
-        .msg-group.ai { align-self: flex-start; align-items: flex-start; }
-        .bubble { padding: 12px 18px; border-radius: 14px; font-size: 0.94rem; line-height: 1.6; word-break: break-word; white-space: pre-wrap; }
-        .msg-group.user .bubble { background: linear-gradient(135deg, #2563eb, #1d4ed8); color: #fff; border-bottom-right-radius: 3px; }
-        .msg-group.ai .bubble { background: #1e293b; color: #f1f5f9; border: 1px solid #334155; border-bottom-left-radius: 3px; }
-        
-        .typing-loader { display: none; align-self: flex-start; background: #1e293b; border: 1px solid #334155; padding: 10px 16px; border-radius: 12px; font-size: 0.85rem; color: #94a3b8; font-style: italic; }
+        .brand-badge {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, #38bdf8, #2563eb);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
 
-        .prompt-tray { display: flex; gap: 8px; padding: 0 24px 12px 24px; overflow-x: auto; scrollbar-width: none; }
-        .prompt-tray::-webkit-scrollbar { display: none; }
-        .prompt-chip { background: #17223b; border: 1px solid #2e3e60; color: #94a3b8; padding: 6px 12px; border-radius: 999px; font-size: 0.76rem; cursor: pointer; white-space: nowrap; transition: 0.2s; }
-        .prompt-chip:hover { color: #f8fafc; border-color: #38bdf8; background: #1e2d4e; }
+        .brand-title h1 {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: #f1f5f9;
+            letter-spacing: -0.01em;
+        }
 
-        .input-bar { padding: 16px 24px; border-top: 1px solid #1f2937; background: #131d31; display: flex; gap: 10px; }
-        input[type="text"] { flex: 1; background: #090d16; border: 1px solid #334155; color: #fff; padding: 13px 18px; border-radius: 12px; font-size: 0.95rem; outline: none; }
-        input[type="text"]:focus { border-color: #38bdf8; }
-        .send-btn { background: #38bdf8; color: #090d16; font-weight: 700; border: none; padding: 13px 24px; border-radius: 12px; cursor: pointer; transition: 0.2s; }
-        .send-btn:hover { background: #0284c7; color: #fff; }
-        .send-btn:disabled { background: #334155; color: #94a3b8; cursor: not-allowed; }
+        .brand-title p {
+            font-size: 0.74rem;
+            color: #94a3b8;
+        }
+
+        .nav-groups {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .nav-category {
+            display: flex;
+            align-items: center;
+            background: #090d16;
+            border: 1px solid #334155;
+            border-radius: 8px;
+            padding: 3px 6px;
+            gap: 4px;
+        }
+
+        .cat-label {
+            font-size: 0.68rem;
+            font-weight: 700;
+            color: #64748b;
+            text-transform: uppercase;
+            margin-right: 2px;
+            padding-left: 2px;
+            letter-spacing: 0.03em;
+        }
+
+        .nav-tab {
+            padding: 5px 10px;
+            font-size: 0.76rem;
+            font-weight: 500;
+            border-radius: 6px;
+            text-decoration: none;
+            color: #94a3b8;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+
+        .nav-tab:hover {
+            color: #f8fafc;
+        }
+
+        .nav-tab.active {
+            background: #2563eb;
+            color: #ffffff;
+            font-weight: 600;
+            box-shadow: 0 2px 8px rgba(37, 99, 235, 0.4);
+        }
+
+        .banner {
+            background: rgba(56, 189, 248, 0.08);
+            border-bottom: 1px solid #1f2937;
+            padding: 10px 24px;
+            font-size: 0.8rem;
+            color: #7dd3fc;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .banner-tag {
+            background: rgba(56, 189, 248, 0.15);
+            border: 1px solid #0284c7;
+            padding: 2px 8px;
+            border-radius: 999px;
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+
+        #chatBox {
+            flex: 1;
+            overflow-y: auto;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .msg-group {
+            display: flex;
+            flex-direction: column;
+            max-width: 82%;
+            animation: fadeIn 0.2s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(6px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .msg-group.user {
+            align-self: flex-end;
+            align-items: flex-end;
+        }
+
+        .msg-group.ai {
+            align-self: flex-start;
+            align-items: flex-start;
+        }
+
+        .bubble {
+            padding: 12px 18px;
+            border-radius: 14px;
+            font-size: 0.94rem;
+            line-height: 1.6;
+            word-break: break-word;
+            white-space: pre-wrap;
+        }
+
+        .msg-group.user .bubble {
+            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+            color: #fff;
+            border-bottom-right-radius: 3px;
+        }
+
+        .msg-group.ai .bubble {
+            background: #1e293b;
+            color: #f1f5f9;
+            border: 1px solid #334155;
+            border-bottom-left-radius: 3px;
+        }
+
+        .typing-loader {
+            display: none;
+            align-self: flex-start;
+            background: #1e293b;
+            border: 1px solid #334155;
+            padding: 10px 16px;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            color: #94a3b8;
+            font-style: italic;
+        }
+
+        .prompt-tray {
+            display: flex;
+            gap: 8px;
+            padding: 0 24px 12px 24px;
+            overflow-x: auto;
+            scrollbar-width: none;
+        }
+
+        .prompt-tray::-webkit-scrollbar {
+            display: none;
+        }
+
+        .prompt-chip {
+            background: #17223b;
+            border: 1px solid #2e3e60;
+            color: #94a3b8;
+            padding: 6px 12px;
+            border-radius: 999px;
+            font-size: 0.76rem;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: 0.2s;
+        }
+
+        .prompt-chip:hover {
+            color: #f8fafc;
+            border-color: #38bdf8;
+            background: #1e2d4e;
+        }
+
+        .input-bar {
+            padding: 16px 24px;
+            border-top: 1px solid #1f2937;
+            background: #131d31;
+            display: flex;
+            gap: 10px;
+        }
+
+        input[type="text"] {
+            flex: 1;
+            background: #090d16;
+            border: 1px solid #334155;
+            color: #fff;
+            padding: 13px 18px;
+            border-radius: 12px;
+            font-size: 0.95rem;
+            outline: none;
+        }
+
+        input[type="text"]:focus {
+            border-color: #38bdf8;
+        }
+
+        .send-btn {
+            background: #38bdf8;
+            color: #090d16;
+            font-weight: 700;
+            border: none;
+            padding: 13px 24px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .send-btn:hover {
+            background: #0284c7;
+            color: #fff;
+        }
+
+        .send-btn:disabled {
+            background: #334155;
+            color: #94a3b8;
+            cursor: not-allowed;
+        }
     </style>
 </head>
+
 <body>
     <div class="container">
         <header>
@@ -80,25 +324,40 @@
                     <span class="cat-label">Agentic Offline:</span>
                     <a href="/chat/agent/offline/" class="nav-tab">🛡️ Local Agent</a>
                 </div>
+                <div class="nav-category">
+                    <span class="cat-label">MCP:</span>
+                    <a href="/chat/mcp/gmail/" class="nav-tab">🔌 MCP Studio</a>
+                </div>
+                <div class="nav-category">
+                    <span class="cat-label">RAG:</span>
+                    <a href="/chat/rag/" class="nav-tab">📚 RAG Studio</a>
+                </div>
             </nav>
         </header>
 
         <div class="banner">
-            <span>🌐 <strong>GenAI Chat (Online):</strong> Pure conversational AI powered by Google Gemini without external tools.</span>
+            <span>🌐 <strong>GenAI Chat (Online):</strong> Pure conversational AI powered by Google Gemini without
+                external tools.</span>
             <span class="banner-tag">Google Gemini</span>
         </div>
 
         <div id="chatBox">
             <div class="msg-group ai">
-                <div class="bubble">Hello! I am your online AI assistant powered by Google Gemini. Ask me questions, brainstorm ideas, write stories, or generate code!</div>
+                <div class="bubble">Hello! I am your online AI assistant powered by Google Gemini. Ask me questions,
+                    brainstorm ideas, write stories, or generate code!</div>
             </div>
             <div id="loading" class="typing-loader">Thinking...</div>
         </div>
 
         <div class="prompt-tray">
-            <div class="prompt-chip" onclick="fillPrompt('Explain the theory of relativity in simple terms.')">💡 Relativity in simple terms</div>
-            <div class="prompt-chip" onclick="fillPrompt('Write a clean Python function to sort a dictionary by values.')">🐍 Python dict sort</div>
-            <div class="prompt-chip" onclick="fillPrompt('What are the key architectural differences between LLMs and Agents?')">🤖 LLMs vs Agents</div>
+            <div class="prompt-chip" onclick="fillPrompt('Explain the theory of relativity in simple terms.')">💡
+                Relativity in simple terms</div>
+            <div class="prompt-chip"
+                onclick="fillPrompt('Write a clean Python function to sort a dictionary by values.')">🐍 Python dict
+                sort</div>
+            <div class="prompt-chip"
+                onclick="fillPrompt('What are the key architectural differences between LLMs and Agents?')">🤖 LLMs vs
+                Agents</div>
         </div>
 
         <div class="input-bar">
@@ -165,4 +424,5 @@
         }
     </script>
 </body>
+
 </html>

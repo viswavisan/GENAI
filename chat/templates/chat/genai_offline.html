@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,51 +9,303 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
-        body { background: #090d16; color: #f8fafc; min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 14px; }
-        .container { width: 100%; max-width: 960px; background: #111827; border-radius: 18px; box-shadow: 0 20px 40px rgba(0,0,0,0.6); display: flex; flex-direction: column; height: 92vh; border: 1px solid #1f2937; overflow: hidden; }
-        
-        header { padding: 14px 20px; background: #131d31; border-bottom: 1px solid #1f2937; display: flex; align-items: center; justify-content: space-between; gap: 14px; flex-wrap: wrap; }
-        .brand-area { display: flex; align-items: center; gap: 10px; }
-        .brand-badge { width: 36px; height: 36px; border-radius: 10px; background: linear-gradient(135deg, #10b981, #059669); display: flex; align-items: center; justify-content: center; font-size: 1.2rem; }
-        .brand-title h1 { font-size: 1.1rem; font-weight: 700; color: #f1f5f9; }
-        .brand-title p { font-size: 0.72rem; color: #94a3b8; }
-        
-        .nav-groups { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
-        .nav-category { display: flex; align-items: center; background: #090d16; border: 1px solid #334155; border-radius: 10px; padding: 3px 6px; gap: 4px; }
-        .cat-label { font-size: 0.68rem; font-weight: 700; color: #64748b; text-transform: uppercase; margin-right: 4px; padding-left: 4px; }
-        .nav-tab { padding: 5px 10px; font-size: 0.76rem; font-weight: 500; border-radius: 6px; text-decoration: none; color: #94a3b8; transition: all 0.2s; white-space: nowrap; }
-        .nav-tab:hover { color: #f8fafc; }
-        .nav-tab.active { background: #10b981; color: #ffffff; font-weight: 600; box-shadow: 0 2px 8px rgba(16, 185, 129, 0.4); }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
 
-        .banner { background: rgba(16, 185, 129, 0.08); border-bottom: 1px solid #1f2937; padding: 10px 24px; font-size: 0.8rem; color: #6ee7b7; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; }
-        .banner-controls { display: flex; align-items: center; gap: 8px; }
-        select { background: #090d16; color: #fff; border: 1px solid #334155; padding: 4px 10px; border-radius: 6px; font-size: 0.78rem; outline: none; cursor: pointer; }
+        body {
+            background: #090d16;
+            color: #f8fafc;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 14px;
+        }
 
-        #chatBox { flex: 1; overflow-y: auto; padding: 24px; display: flex; flex-direction: column; gap: 16px; }
-        .msg-group { display: flex; flex-direction: column; max-width: 82%; animation: fadeIn 0.2s ease; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
-        .msg-group.user { align-self: flex-end; align-items: flex-end; }
-        .msg-group.ai { align-self: flex-start; align-items: flex-start; }
-        .bubble { padding: 12px 18px; border-radius: 14px; font-size: 0.94rem; line-height: 1.6; word-break: break-word; white-space: pre-wrap; }
-        .msg-group.user .bubble { background: linear-gradient(135deg, #059669, #047857); color: #fff; border-bottom-right-radius: 3px; }
-        .msg-group.ai .bubble { background: #1e293b; color: #f1f5f9; border: 1px solid #334155; border-bottom-left-radius: 3px; }
-        
-        .typing-loader { display: none; align-self: flex-start; background: #1e293b; border: 1px solid #334155; padding: 10px 16px; border-radius: 12px; font-size: 0.85rem; color: #94a3b8; font-style: italic; }
+        .container {
+            width: 100%;
+            max-width: 1160px;
+            background: #111827;
+            border-radius: 18px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+            display: flex;
+            flex-direction: column;
+            height: 92vh;
+            border: 1px solid #1f2937;
+            overflow: hidden;
+        }
 
-        .prompt-tray { display: flex; gap: 8px; padding: 0 24px 12px 24px; overflow-x: auto; scrollbar-width: none; }
-        .prompt-tray::-webkit-scrollbar { display: none; }
-        .prompt-chip { background: #17223b; border: 1px solid #2e3e60; color: #94a3b8; padding: 6px 12px; border-radius: 999px; font-size: 0.76rem; cursor: pointer; white-space: nowrap; transition: 0.2s; }
-        .prompt-chip:hover { color: #f8fafc; border-color: #10b981; background: #1e2d4e; }
+        header {
+            padding: 14px 20px 12px 20px;
+            background: #131d31;
+            border-bottom: 1px solid #1f2937;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
 
-        .input-bar { padding: 16px 24px; border-top: 1px solid #1f2937; background: #131d31; display: flex; gap: 10px; }
-        input[type="text"] { flex: 1; background: #090d16; border: 1px solid #334155; color: #fff; padding: 13px 18px; border-radius: 12px; font-size: 0.95rem; outline: none; }
-        input[type="text"]:focus { border-color: #10b981; }
-        .send-btn { background: #10b981; color: #022c22; font-weight: 700; border: none; padding: 13px 24px; border-radius: 12px; cursor: pointer; transition: 0.2s; }
-        .send-btn:hover { background: #059669; color: #fff; }
-        .send-btn:disabled { background: #334155; color: #94a3b8; cursor: not-allowed; }
+        .brand-area {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .brand-badge {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, #10b981, #059669);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+
+        .brand-title h1 {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: #f1f5f9;
+            letter-spacing: -0.01em;
+        }
+
+        .brand-title p {
+            font-size: 0.74rem;
+            color: #94a3b8;
+        }
+
+        .nav-groups {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .nav-category {
+            display: flex;
+            align-items: center;
+            background: #090d16;
+            border: 1px solid #334155;
+            border-radius: 8px;
+            padding: 3px 6px;
+            gap: 4px;
+        }
+
+        .cat-label {
+            font-size: 0.68rem;
+            font-weight: 700;
+            color: #64748b;
+            text-transform: uppercase;
+            margin-right: 2px;
+            padding-left: 2px;
+            letter-spacing: 0.03em;
+        }
+
+        .nav-tab {
+            padding: 5px 10px;
+            font-size: 0.76rem;
+            font-weight: 500;
+            border-radius: 6px;
+            text-decoration: none;
+            color: #94a3b8;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+
+        .nav-tab:hover {
+            color: #f8fafc;
+        }
+
+        .nav-tab.active {
+            background: #10b981;
+            color: #ffffff;
+            font-weight: 600;
+            box-shadow: 0 2px 8px rgba(16, 185, 129, 0.4);
+        }
+
+        .banner {
+            background: rgba(16, 185, 129, 0.08);
+            border-bottom: 1px solid #1f2937;
+            padding: 10px 24px;
+            font-size: 0.8rem;
+            color: #6ee7b7;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .banner-controls {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        select {
+            background: #090d16;
+            color: #fff;
+            border: 1px solid #334155;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 0.78rem;
+            outline: none;
+            cursor: pointer;
+        }
+
+        #chatBox {
+            flex: 1;
+            overflow-y: auto;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .msg-group {
+            display: flex;
+            flex-direction: column;
+            max-width: 82%;
+            animation: fadeIn 0.2s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(6px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .msg-group.user {
+            align-self: flex-end;
+            align-items: flex-end;
+        }
+
+        .msg-group.ai {
+            align-self: flex-start;
+            align-items: flex-start;
+        }
+
+        .bubble {
+            padding: 12px 18px;
+            border-radius: 14px;
+            font-size: 0.94rem;
+            line-height: 1.6;
+            word-break: break-word;
+            white-space: pre-wrap;
+        }
+
+        .msg-group.user .bubble {
+            background: linear-gradient(135deg, #059669, #047857);
+            color: #fff;
+            border-bottom-right-radius: 3px;
+        }
+
+        .msg-group.ai .bubble {
+            background: #1e293b;
+            color: #f1f5f9;
+            border: 1px solid #334155;
+            border-bottom-left-radius: 3px;
+        }
+
+        .typing-loader {
+            display: none;
+            align-self: flex-start;
+            background: #1e293b;
+            border: 1px solid #334155;
+            padding: 10px 16px;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            color: #94a3b8;
+            font-style: italic;
+        }
+
+        .prompt-tray {
+            display: flex;
+            gap: 8px;
+            padding: 0 24px 12px 24px;
+            overflow-x: auto;
+            scrollbar-width: none;
+        }
+
+        .prompt-tray::-webkit-scrollbar {
+            display: none;
+        }
+
+        .prompt-chip {
+            background: #17223b;
+            border: 1px solid #2e3e60;
+            color: #94a3b8;
+            padding: 6px 12px;
+            border-radius: 999px;
+            font-size: 0.76rem;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: 0.2s;
+        }
+
+        .prompt-chip:hover {
+            color: #f8fafc;
+            border-color: #10b981;
+            background: #1e2d4e;
+        }
+
+        .input-bar {
+            padding: 16px 24px;
+            border-top: 1px solid #1f2937;
+            background: #131d31;
+            display: flex;
+            gap: 10px;
+        }
+
+        input[type="text"] {
+            flex: 1;
+            background: #090d16;
+            border: 1px solid #334155;
+            color: #fff;
+            padding: 13px 18px;
+            border-radius: 12px;
+            font-size: 0.95rem;
+            outline: none;
+        }
+
+        input[type="text"]:focus {
+            border-color: #10b981;
+        }
+
+        .send-btn {
+            background: #10b981;
+            color: #022c22;
+            font-weight: 700;
+            border: none;
+            padding: 13px 24px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .send-btn:hover {
+            background: #059669;
+            color: #fff;
+        }
+
+        .send-btn:disabled {
+            background: #334155;
+            color: #94a3b8;
+            cursor: not-allowed;
+        }
     </style>
 </head>
+
 <body>
     <div class="container">
         <header>
@@ -80,11 +333,20 @@
                     <span class="cat-label">Agentic Offline:</span>
                     <a href="/chat/agent/offline/" class="nav-tab">🛡️ Local Agent</a>
                 </div>
+                <div class="nav-category">
+                    <span class="cat-label">MCP:</span>
+                    <a href="/chat/mcp/gmail/" class="nav-tab">🔌 MCP Studio</a>
+                </div>
+                <div class="nav-category">
+                    <span class="cat-label">RAG:</span>
+                    <a href="/chat/rag/" class="nav-tab">📚 RAG Studio</a>
+                </div>
             </nav>
         </header>
 
         <div class="banner">
-            <span>🔒 <strong>GenAI Chat (Offline):</strong> Connects to local Ollama (<code>http://localhost:11434</code>). Conversational inference with zero internet.</span>
+            <span>🔒 <strong>GenAI Chat (Offline):</strong> Connects to local Ollama
+                (<code>http://localhost:11434</code>). Conversational inference with zero internet.</span>
             <div class="banner-controls">
                 <label for="modelSelect" style="color: #cbd5e1; font-size: 0.76rem;">Model:</label>
                 <select id="modelSelect">
@@ -98,17 +360,22 @@
 
         <div id="chatBox">
             <div class="msg-group ai">
-                <div class="bubble">Hello! I run 100% offline using your local Ollama daemon. No data leaves your machine.
-<br><br>
-<em>Ensure Ollama is started: <code>ollama run llama3.2</code></em></div>
+                <div class="bubble">Hello! I run 100% offline using your local Ollama daemon. No data leaves your
+                    machine.
+                    <br><br>
+                    <em>Ensure Ollama is started: <code>ollama run llama3.2</code></em>
+                </div>
             </div>
             <div id="loading" class="typing-loader">Running local model inference...</div>
         </div>
 
         <div class="prompt-tray">
-            <div class="prompt-chip" onclick="fillPrompt('Explain why offline local AI models are great for privacy.')">🔒 Privacy advantages</div>
-            <div class="prompt-chip" onclick="fillPrompt('Write a Python script to find duplicate files in a folder.')">🐍 Python duplicates</div>
-            <div class="prompt-chip" onclick="fillPrompt('Summarize the history of open-source LLMs.')">📖 History of Open Models</div>
+            <div class="prompt-chip" onclick="fillPrompt('Explain why offline local AI models are great for privacy.')">
+                🔒 Privacy advantages</div>
+            <div class="prompt-chip" onclick="fillPrompt('Write a Python script to find duplicate files in a folder.')">
+                🐍 Python duplicates</div>
+            <div class="prompt-chip" onclick="fillPrompt('Summarize the history of open-source LLMs.')">📖 History of
+                Open Models</div>
         </div>
 
         <div class="input-bar">
@@ -177,4 +444,5 @@
         }
     </script>
 </body>
+
 </html>

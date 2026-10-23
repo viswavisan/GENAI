@@ -1,65 +1,363 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Agentic AI Online (Limited Tools)</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Fira+Code:wght@400;500&display=swap"
+        rel="stylesheet">
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
-        body { background: #090d16; color: #f8fafc; min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 14px; }
-        .container { width: 100%; max-width: 960px; background: #111827; border-radius: 18px; box-shadow: 0 20px 40px rgba(0,0,0,0.6); display: flex; flex-direction: column; height: 92vh; border: 1px solid #1f2937; overflow: hidden; }
-        
-        header { padding: 14px 20px; background: #131d31; border-bottom: 1px solid #1f2937; display: flex; align-items: center; justify-content: space-between; gap: 14px; flex-wrap: wrap; }
-        .brand-area { display: flex; align-items: center; gap: 10px; }
-        .brand-badge { width: 36px; height: 36px; border-radius: 10px; background: linear-gradient(135deg, #a855f7, #6366f1); display: flex; align-items: center; justify-content: center; font-size: 1.2rem; }
-        .brand-title h1 { font-size: 1.1rem; font-weight: 700; color: #f1f5f9; }
-        .brand-title p { font-size: 0.72rem; color: #94a3b8; }
-        
-        .nav-groups { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
-        .nav-category { display: flex; align-items: center; background: #090d16; border: 1px solid #334155; border-radius: 10px; padding: 3px 6px; gap: 4px; }
-        .cat-label { font-size: 0.68rem; font-weight: 700; color: #64748b; text-transform: uppercase; margin-right: 4px; padding-left: 4px; }
-        .nav-tab { padding: 5px 10px; font-size: 0.76rem; font-weight: 500; border-radius: 6px; text-decoration: none; color: #94a3b8; transition: all 0.2s; white-space: nowrap; }
-        .nav-tab:hover { color: #f8fafc; }
-        .nav-tab.active { background: #a855f7; color: #ffffff; font-weight: 600; box-shadow: 0 2px 8px rgba(168, 85, 247, 0.4); }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
 
-        .toolbox-tray { background: #0d1424; border-bottom: 1px solid #1f2937; padding: 10px 24px; display: flex; align-items: center; gap: 8px; overflow-x: auto; }
-        .toolbox-label { font-size: 0.72rem; text-transform: uppercase; font-weight: 700; color: #c084fc; letter-spacing: 0.05em; white-space: nowrap; }
-        .tool-chip { background: #17223b; border: 1px solid #2e3e60; padding: 5px 10px; border-radius: 8px; font-size: 0.76rem; display: flex; align-items: center; gap: 6px; color: #cbd5e1; white-space: nowrap; cursor: pointer; transition: 0.2s; }
-        .tool-chip:hover { border-color: #a855f7; background: #1f2d4e; }
+        body {
+            background: #090d16;
+            color: #f8fafc;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 14px;
+        }
 
-        #chatBox { flex: 1; overflow-y: auto; padding: 24px; display: flex; flex-direction: column; gap: 16px; }
-        .msg-group { display: flex; flex-direction: column; max-width: 84%; animation: fadeIn 0.2s ease; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
-        .msg-group.user { align-self: flex-end; align-items: flex-end; }
-        .msg-group.ai { align-self: flex-start; align-items: flex-start; width: 100%; }
-        
-        .user-bubble { background: linear-gradient(135deg, #2563eb, #1d4ed8); color: #fff; padding: 12px 18px; border-radius: 14px; border-bottom-right-radius: 3px; font-size: 0.94rem; line-height: 1.5; }
-        
-        .execution-card { background: #0f172a; border: 1px solid #334155; border-radius: 12px; padding: 12px 16px; margin-bottom: 8px; width: 100%; max-width: 760px; }
-        .execution-header { font-size: 0.74rem; color: #c084fc; font-weight: 700; text-transform: uppercase; margin-bottom: 8px; }
-        .step-row { background: #1e293b; border-left: 3px solid #a855f7; border-radius: 6px; padding: 8px 12px; margin-bottom: 6px; font-family: 'Fira Code', monospace; font-size: 0.8rem; }
-        .step-tool { color: #38bdf8; font-weight: 600; }
-        .step-output { color: #4ade80; margin-top: 4px; padding-top: 4px; border-top: 1px dashed #334155; }
-        
-        .ai-bubble { background: #1e293b; color: #f1f5f9; padding: 14px 18px; border-radius: 14px; border-bottom-left-radius: 3px; border: 1px solid #334155; font-size: 0.94rem; line-height: 1.6; max-width: 760px; white-space: pre-wrap; }
-        .typing-loader { display: none; align-self: flex-start; background: #1e293b; border: 1px solid #334155; padding: 10px 16px; border-radius: 12px; font-size: 0.85rem; color: #94a3b8; font-style: italic; }
+        .container {
+            width: 100%;
+            max-width: 1160px;
+            background: #111827;
+            border-radius: 18px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+            display: flex;
+            flex-direction: column;
+            height: 92vh;
+            border: 1px solid #1f2937;
+            overflow: hidden;
+        }
 
-        .prompt-tray { display: flex; gap: 8px; padding: 0 24px 12px 24px; overflow-x: auto; scrollbar-width: none; }
-        .prompt-tray::-webkit-scrollbar { display: none; }
-        .prompt-chip { background: #17223b; border: 1px solid #2e3e60; color: #94a3b8; padding: 6px 12px; border-radius: 999px; font-size: 0.76rem; cursor: pointer; white-space: nowrap; transition: 0.2s; }
-        .prompt-chip:hover { color: #f8fafc; border-color: #a855f7; background: #1e2d4e; }
+        header {
+            padding: 14px 20px 12px 20px;
+            background: #131d31;
+            border-bottom: 1px solid #1f2937;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
 
-        .input-bar { padding: 16px 24px; border-top: 1px solid #1f2937; background: #131d31; display: flex; gap: 10px; }
-        input[type="text"] { flex: 1; background: #090d16; border: 1px solid #334155; color: #fff; padding: 13px 18px; border-radius: 12px; font-size: 0.95rem; outline: none; }
-        input[type="text"]:focus { border-color: #a855f7; }
-        .send-btn { background: #a855f7; color: #fff; font-weight: 700; border: none; padding: 13px 24px; border-radius: 12px; cursor: pointer; transition: 0.2s; }
-        .send-btn:hover { background: #9333ea; }
-        .send-btn:disabled { background: #334155; color: #94a3b8; cursor: not-allowed; }
+        .brand-area {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .brand-badge {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, #a855f7, #6366f1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+
+        .brand-title h1 {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: #f1f5f9;
+            letter-spacing: -0.01em;
+        }
+
+        .brand-title p {
+            font-size: 0.74rem;
+            color: #94a3b8;
+        }
+
+        .nav-groups {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .nav-category {
+            display: flex;
+            align-items: center;
+            background: #090d16;
+            border: 1px solid #334155;
+            border-radius: 8px;
+            padding: 3px 6px;
+            gap: 4px;
+        }
+
+        .cat-label {
+            font-size: 0.68rem;
+            font-weight: 700;
+            color: #64748b;
+            text-transform: uppercase;
+            margin-right: 2px;
+            padding-left: 2px;
+            letter-spacing: 0.03em;
+        }
+
+        .nav-tab {
+            padding: 5px 10px;
+            font-size: 0.76rem;
+            font-weight: 500;
+            border-radius: 6px;
+            text-decoration: none;
+            color: #94a3b8;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+
+        .nav-tab:hover {
+            color: #f8fafc;
+        }
+
+        .nav-tab.active {
+            background: #a855f7;
+            color: #ffffff;
+            font-weight: 600;
+            box-shadow: 0 2px 8px rgba(168, 85, 247, 0.4);
+        }
+
+        .toolbox-tray {
+            background: #0d1424;
+            border-bottom: 1px solid #1f2937;
+            padding: 10px 24px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            overflow-x: auto;
+        }
+
+        .toolbox-label {
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            font-weight: 700;
+            color: #c084fc;
+            letter-spacing: 0.05em;
+            white-space: nowrap;
+        }
+
+        .tool-chip {
+            background: #17223b;
+            border: 1px solid #2e3e60;
+            padding: 5px 10px;
+            border-radius: 8px;
+            font-size: 0.76rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: #cbd5e1;
+            white-space: nowrap;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .tool-chip:hover {
+            border-color: #a855f7;
+            background: #1f2d4e;
+        }
+
+        #chatBox {
+            flex: 1;
+            overflow-y: auto;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .msg-group {
+            display: flex;
+            flex-direction: column;
+            max-width: 84%;
+            animation: fadeIn 0.2s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(6px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .msg-group.user {
+            align-self: flex-end;
+            align-items: flex-end;
+        }
+
+        .msg-group.ai {
+            align-self: flex-start;
+            align-items: flex-start;
+            width: 100%;
+        }
+
+        .user-bubble {
+            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+            color: #fff;
+            padding: 12px 18px;
+            border-radius: 14px;
+            border-bottom-right-radius: 3px;
+            font-size: 0.94rem;
+            line-height: 1.5;
+        }
+
+        .execution-card {
+            background: #0f172a;
+            border: 1px solid #334155;
+            border-radius: 12px;
+            padding: 12px 16px;
+            margin-bottom: 8px;
+            width: 100%;
+            max-width: 760px;
+        }
+
+        .execution-header {
+            font-size: 0.74rem;
+            color: #c084fc;
+            font-weight: 700;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+
+        .step-row {
+            background: #1e293b;
+            border-left: 3px solid #a855f7;
+            border-radius: 6px;
+            padding: 8px 12px;
+            margin-bottom: 6px;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.8rem;
+        }
+
+        .step-tool {
+            color: #38bdf8;
+            font-weight: 600;
+        }
+
+        .step-output {
+            color: #4ade80;
+            margin-top: 4px;
+            padding-top: 4px;
+            border-top: 1px dashed #334155;
+        }
+
+        .ai-bubble {
+            background: #1e293b;
+            color: #f1f5f9;
+            padding: 14px 18px;
+            border-radius: 14px;
+            border-bottom-left-radius: 3px;
+            border: 1px solid #334155;
+            font-size: 0.94rem;
+            line-height: 1.6;
+            max-width: 760px;
+            white-space: pre-wrap;
+        }
+
+        .typing-loader {
+            display: none;
+            align-self: flex-start;
+            background: #1e293b;
+            border: 1px solid #334155;
+            padding: 10px 16px;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            color: #94a3b8;
+            font-style: italic;
+        }
+
+        .prompt-tray {
+            display: flex;
+            gap: 8px;
+            padding: 0 24px 12px 24px;
+            overflow-x: auto;
+            scrollbar-width: none;
+        }
+
+        .prompt-tray::-webkit-scrollbar {
+            display: none;
+        }
+
+        .prompt-chip {
+            background: #17223b;
+            border: 1px solid #2e3e60;
+            color: #94a3b8;
+            padding: 6px 12px;
+            border-radius: 999px;
+            font-size: 0.76rem;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: 0.2s;
+        }
+
+        .prompt-chip:hover {
+            color: #f8fafc;
+            border-color: #a855f7;
+            background: #1e2d4e;
+        }
+
+        .input-bar {
+            padding: 16px 24px;
+            border-top: 1px solid #1f2937;
+            background: #131d31;
+            display: flex;
+            gap: 10px;
+        }
+
+        input[type="text"] {
+            flex: 1;
+            background: #090d16;
+            border: 1px solid #334155;
+            color: #fff;
+            padding: 13px 18px;
+            border-radius: 12px;
+            font-size: 0.95rem;
+            outline: none;
+        }
+
+        input[type="text"]:focus {
+            border-color: #a855f7;
+        }
+
+        .send-btn {
+            background: #a855f7;
+            color: #fff;
+            font-weight: 700;
+            border: none;
+            padding: 13px 24px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .send-btn:hover {
+            background: #9333ea;
+        }
+
+        .send-btn:disabled {
+            background: #334155;
+            color: #94a3b8;
+            cursor: not-allowed;
+        }
     </style>
 </head>
+
 <body>
     <div class="container">
         <header>
@@ -87,6 +385,14 @@
                     <span class="cat-label">Agentic Offline:</span>
                     <a href="/chat/agent/offline/" class="nav-tab">🛡️ Local Agent</a>
                 </div>
+                <div class="nav-category">
+                    <span class="cat-label">MCP:</span>
+                    <a href="/chat/mcp/gmail/" class="nav-tab">🔌 MCP Studio</a>
+                </div>
+                <div class="nav-category">
+                    <span class="cat-label">RAG:</span>
+                    <a href="/chat/rag/" class="nav-tab">📚 RAG Studio</a>
+                </div>
             </nav>
         </header>
 
@@ -103,22 +409,29 @@
         <div id="chatBox">
             <div class="msg-group ai">
                 <div class="ai-bubble">👋 Welcome to <strong>Agentic AI Online (Limited Tools)</strong>!
-<br><br>
-This agent has access strictly to predefined, sandboxed tools (Clock, Calculator, Weather, Screen Brightness, Reverse Text).
-Click any tool chip above or ask a question to watch the agent choose and execute tools!</div>
+                    <br><br>
+                    This agent has access strictly to predefined, sandboxed tools (Clock, Calculator, Weather, Screen
+                    Brightness, Reverse Text).
+                    Click any tool chip above or ask a question to watch the agent choose and execute tools!
+                </div>
             </div>
             <div id="loading" class="typing-loader">🤖 Agent is reasoning and executing tools...</div>
         </div>
 
         <div class="prompt-tray">
-            <div class="prompt-chip" onclick="fillPrompt('What is the current time and calculate (150 * 12) + 45?')">⚡ Time & Math combo</div>
-            <div class="prompt-chip" onclick="fillPrompt('What is my laptop screen brightness right now?')">💡 Check brightness</div>
-            <div class="prompt-chip" onclick="fillPrompt('What is the weather in Tokyo and Paris?')">🌤️ Weather Tokyo & Paris</div>
-            <div class="prompt-chip" onclick="fillPrompt('Reverse the word \'Antigravity Agent\'')">🔤 Reverse string</div>
+            <div class="prompt-chip" onclick="fillPrompt('What is the current time and calculate (150 * 12) + 45?')">⚡
+                Time & Math combo</div>
+            <div class="prompt-chip" onclick="fillPrompt('What is my laptop screen brightness right now?')">💡 Check
+                brightness</div>
+            <div class="prompt-chip" onclick="fillPrompt('What is the weather in Tokyo and Paris?')">🌤️ Weather Tokyo &
+                Paris</div>
+            <div class="prompt-chip" onclick="fillPrompt('Reverse the word \'Antigravity Agent\'')">🔤 Reverse string
+            </div>
         </div>
 
         <div class="input-bar">
-            <input id="userInput" type="text" placeholder="Ask a question requiring specific tools..." autocomplete="off">
+            <input id="userInput" type="text" placeholder="Ask a question requiring specific tools..."
+                autocomplete="off">
             <button id="sendBtn" class="send-btn" onclick="sendMessage()">Run Agent ➤</button>
         </div>
     </div>
@@ -186,7 +499,7 @@ Click any tool chip above or ask a question to watch the agent choose and execut
                 steps.forEach((s, idx) => {
                     stepsHtml += `
                         <div class="step-row">
-                            <div class="step-tool">Step ${idx+1}: ${escapeHtml(s.tool)}()</div>
+                            <div class="step-tool">Step ${idx + 1}: ${escapeHtml(s.tool)}()</div>
                             <div style="color:#94a3b8; font-size:0.75rem;">Input: ${escapeHtml(JSON.stringify(s.args || {}))}</div>
                             <div class="step-output">Output: ${escapeHtml(String(s.output))}</div>
                         </div>
@@ -214,4 +527,5 @@ Click any tool chip above or ask a question to watch the agent choose and execut
         }
     </script>
 </body>
+
 </html>

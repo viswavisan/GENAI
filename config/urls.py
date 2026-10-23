@@ -12,6 +12,9 @@ urlpatterns = [
     path('agent/limited/', chat_views.agent_online_limited_ui, name='agent_limited_direct'),
     path('agent/universal/', chat_views.agent_online_universal_ui, name='agent_universal_direct'),
     path('agent/offline/', chat_views.agent_offline_ui, name='agent_offline_direct'),
+    path('mcp/', chat_views.gmail_mcp_ui, name='mcp_direct'),
+    path('mcp/gmail/', chat_views.gmail_mcp_ui, name='mcp_gmail_direct'),
+    path('rag/', chat_views.rag_ui, name='rag_direct'),
 
     # Aliases
     path('agent/', chat_views.agent_online_universal_ui),

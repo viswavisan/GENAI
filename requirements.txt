@@ -11,6 +11,7 @@ python-dotenv==1.2.4
 google-genai==2.29.0
 google-auth==2.61.0
 openai==3.29.0
+mcp==2.3.0
 
 # HTTP & Networking
 requests==2.34.2
@@ -25,3 +26,6 @@ pydantic_core==2.50.1
 tenacity==9.1.4
 typing_extensions==4.16.0
 anyio==4.15.1
+pypdf==6.21.2
+python-docx==1.2.0
+lxml==6.1.3

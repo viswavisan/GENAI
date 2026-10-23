@@ -24,6 +24,20 @@ urlpatterns = [
     path('agent/offline/', views.agent_offline_ui, name='agent_offline_ui'),
     path('agent/offline/api', views.agent_offline_api, name='agent_offline_api'),
 
+    # =================================================================
+    # GROUP 4: Gmail Model Context Protocol (Gmail MCP Studio)
+    # =================================================================
+    path('mcp/', views.gmail_mcp_ui, name='gmail_mcp_ui_root'),
+    path('mcp/api', views.gmail_mcp_api, name='gmail_mcp_api_root'),
+    path('mcp/gmail/', views.gmail_mcp_ui, name='gmail_mcp_ui'),
+    path('mcp/gmail/api', views.gmail_mcp_api, name='gmail_mcp_api'),
+
+    # =================================================================
+    # GROUP 5: RAG Studio (Retrieval-Augmented Generation)
+    # =================================================================
+    path('rag/', views.rag_ui, name='rag_ui'),
+    path('rag/api', views.rag_api, name='rag_api'),
+
     # Backward-compatible routes
     path('limited-agent/', views.agent_online_limited_ui),
     path('limited-agent/api', views.agent_online_limited_api),
@@ -32,3 +46,4 @@ urlpatterns = [
     path('agent/', views.agent_online_universal_ui),
     path('agent/api', views.agent_online_universal_api),
 ]
+

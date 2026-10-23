@@ -1,0 +1,1053 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RAG Studio - GenAI Studio</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #060911;
+            color: #f1f5f9;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            max-width: 1200px;
+            width: 100%;
+            margin: 0 auto;
+            border-left: 1px solid #1f2937;
+            border-right: 1px solid #1f2937;
+            background: #090e1a;
+        }
+
+        /* Top Header */
+        header {
+            padding: 12px 20px 10px 20px;
+            border-bottom: 1px solid #1f2937;
+            background: #0b1120;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .header-brand {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .brand-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .brand-icon {
+            font-size: 1.25rem;
+            background: #1e1b4b;
+            color: #818cf8;
+            padding: 5px 8px;
+            border-radius: 8px;
+            border: 1px solid #4338ca;
+        }
+
+        .brand-text h1 {
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: #f8fafc;
+            line-height: 1.2;
+        }
+
+        .brand-text p {
+            font-size: 0.74rem;
+            color: #818cf8;
+            letter-spacing: 0.02em;
+        }
+
+        .brand-badge {
+            font-size: 0.72rem;
+            font-weight: 600;
+            padding: 3px 8px;
+            border-radius: 9999px;
+            background: rgba(129, 140, 248, 0.15);
+            border: 1px solid rgba(129, 140, 248, 0.3);
+            color: #c7d2fe;
+        }
+
+        /* Navigation Bar */
+        .nav-groups {
+            display: flex;
+            gap: 6px;
+            flex-wrap: nowrap;
+            align-items: center;
+            overflow-x: auto;
+            scrollbar-width: none;
+        }
+        .nav-groups::-webkit-scrollbar { display: none; }
+
+        .nav-category {
+            display: flex;
+            align-items: center;
+            background: #060911;
+            border: 1px solid #334155;
+            border-radius: 8px;
+            padding: 2px 5px;
+            gap: 3px;
+            flex-shrink: 0;
+        }
+
+        .cat-label {
+            font-size: 0.66rem;
+            font-weight: 700;
+            color: #64748b;
+            text-transform: uppercase;
+            margin-right: 2px;
+            padding-left: 2px;
+            letter-spacing: 0.03em;
+        }
+
+        .nav-tab {
+            padding: 4px 8px;
+            font-size: 0.74rem;
+            font-weight: 500;
+            border-radius: 6px;
+            text-decoration: none;
+            color: #94a3b8;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+        .nav-tab:hover { color: #f8fafc; }
+        .nav-tab.active {
+            background: #6366f1;
+            color: #ffffff;
+            font-weight: 600;
+            box-shadow: 0 2px 8px rgba(99, 102, 241, 0.4);
+        }
+
+        /* Sub-Header Toolbar */
+        .rag-subnav {
+            background: #0d1424;
+            border-bottom: 1px solid #1f2937;
+            padding: 8px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .rag-stats {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 0.76rem;
+            color: #94a3b8;
+            font-family: 'Fira Code', monospace;
+        }
+
+        .btn-toggle-kb {
+            background: #1e293b;
+            border: 1px solid #334155;
+            color: #cbd5e1;
+            font-size: 0.75rem;
+            font-weight: 600;
+            padding: 5px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .btn-toggle-kb:hover {
+            background: #6366f1;
+            color: #fff;
+            border-color: #818cf8;
+        }
+
+        /* Main Workspace Layout */
+        .workspace {
+            flex: 1;
+            display: flex;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Chat Panel */
+        .chat-section {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            background: #090e1a;
+        }
+
+        #chatBox {
+            flex: 1;
+            overflow-y: auto;
+            padding: 16px 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .msg-group {
+            display: flex;
+            flex-direction: column;
+            max-width: 90%;
+            animation: fadeIn 0.2s ease;
+        }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+
+        .msg-group.user { align-self: flex-end; align-items: flex-end; }
+        .msg-group.ai { align-self: flex-start; align-items: flex-start; width: 100%; }
+
+        .user-bubble {
+            background: linear-gradient(135deg, #4f46e5, #4338ca);
+            color: #fff;
+            padding: 10px 16px;
+            border-radius: 14px;
+            border-bottom-right-radius: 3px;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        .ai-card {
+            background: #131d31;
+            border: 1px solid #23314d;
+            border-radius: 12px;
+            border-bottom-left-radius: 3px;
+            padding: 16px 18px;
+            width: 100%;
+            max-width: 900px;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .ai-answer {
+            color: #f1f5f9;
+            font-size: 0.92rem;
+            line-height: 1.6;
+            white-space: pre-wrap;
+        }
+
+        /* Retrieved Chunks Card */
+        .chunks-container {
+            background: #090e1a;
+            border: 1px solid #1e293b;
+            border-radius: 8px;
+            padding: 10px 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .chunks-header {
+            font-size: 0.72rem;
+            font-weight: 700;
+            color: #818cf8;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .chunk-card {
+            background: #0f172a;
+            border-left: 3px solid #6366f1;
+            border-radius: 6px;
+            padding: 8px 12px;
+            font-size: 0.8rem;
+            color: #cbd5e1;
+            line-height: 1.45;
+        }
+
+        .chunk-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 4px;
+            font-size: 0.72rem;
+            color: #94a3b8;
+        }
+
+        .chunk-match-badge {
+            background: rgba(99, 102, 241, 0.2);
+            color: #a5b4fc;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: 600;
+            font-family: 'Fira Code', monospace;
+        }
+
+        /* Augmented Prompt Inspector Accordion */
+        .inspector-box {
+            background: #070b14;
+            border: 1px solid #1f2937;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        .inspector-toggle {
+            padding: 7px 12px;
+            background: #0b1120;
+            font-size: 0.72rem;
+            color: #64748b;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: 0.2s;
+        }
+        .inspector-toggle:hover { color: #cbd5e1; background: #0f172a; }
+
+        .inspector-content {
+            display: none;
+            padding: 10px 12px;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.74rem;
+            color: #94a3b8;
+            white-space: pre-wrap;
+            border-top: 1px solid #1f2937;
+            max-height: 220px;
+            overflow-y: auto;
+        }
+
+        /* Stats Pill */
+        .rag-exec-meta {
+            display: flex;
+            gap: 12px;
+            font-size: 0.7rem;
+            color: #64748b;
+            font-family: 'Fira Code', monospace;
+            align-items: center;
+            border-top: 1px dashed #1e293b;
+            padding-top: 8px;
+        }
+
+        .typing-loader {
+            display: none;
+            align-self: flex-start;
+            background: #131d31;
+            border: 1px solid #23314d;
+            padding: 10px 16px;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            color: #94a3b8;
+            font-style: italic;
+        }
+
+        /* Prompt Tray */
+        .prompt-tray {
+            display: flex;
+            gap: 8px;
+            padding: 0 20px 10px 20px;
+            overflow-x: auto;
+            scrollbar-width: none;
+        }
+        .prompt-tray::-webkit-scrollbar { display: none; }
+        .prompt-chip {
+            background: #17223b;
+            border: 1px solid #2e3e60;
+            color: #94a3b8;
+            padding: 5px 12px;
+            border-radius: 999px;
+            font-size: 0.75rem;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: 0.2s;
+        }
+        .prompt-chip:hover {
+            color: #f8fafc;
+            border-color: #6366f1;
+            background: #1e1b4b;
+        }
+
+        /* Input Bar */
+        .input-bar {
+            padding: 14px 20px;
+            border-top: 1px solid #1f2937;
+            background: #0b1120;
+            display: flex;
+            gap: 10px;
+        }
+        input[type="text"].chat-input {
+            flex: 1;
+            background: #060911;
+            border: 1px solid #334155;
+            color: #fff;
+            padding: 12px 18px;
+            border-radius: 12px;
+            font-size: 0.92rem;
+            outline: none;
+        }
+        input[type="text"].chat-input:focus { border-color: #6366f1; }
+        .send-btn {
+            background: #6366f1;
+            color: #fff;
+            font-weight: 700;
+            border: none;
+            padding: 12px 22px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: 0.2s;
+            font-size: 0.9rem;
+        }
+        .send-btn:hover { background: #4f46e5; }
+        .send-btn:disabled { background: #334155; color: #94a3b8; cursor: not-allowed; }
+
+        /* Knowledge Base Sidebar */
+        .kb-sidebar {
+            width: 340px;
+            background: #0b1120;
+            border-left: 1px solid #1f2937;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            transition: transform 0.3s ease;
+        }
+        .kb-sidebar.collapsed { display: none; }
+
+        .kb-header {
+            padding: 12px 16px;
+            border-bottom: 1px solid #1f2937;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .kb-header h3 { font-size: 0.86rem; font-weight: 700; color: #f8fafc; }
+
+        .kb-body {
+            flex: 1;
+            overflow-y: auto;
+            padding: 14px 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .kb-doc-card {
+            background: #131d31;
+            border: 1px solid #23314d;
+            border-radius: 8px;
+            padding: 10px 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 8px;
+        }
+        .kb-doc-info {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+            overflow: hidden;
+            flex: 1;
+        }
+        .kb-doc-title { font-size: 0.82rem; font-weight: 600; color: #818cf8; word-break: break-word; }
+        .kb-doc-meta { font-size: 0.7rem; color: #64748b; font-family: 'Fira Code', monospace; }
+        .kb-doc-del {
+            background: transparent;
+            border: 1px solid transparent;
+            color: #ef4444;
+            padding: 4px 6px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: 0.2s;
+            font-size: 0.82rem;
+            flex-shrink: 0;
+        }
+        .kb-doc-del:hover {
+            background: rgba(239, 68, 68, 0.15);
+            border-color: rgba(239, 68, 68, 0.3);
+        }
+
+        .kb-add-form {
+            background: #090e1a;
+            border: 1px solid #1f2937;
+            border-radius: 8px;
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .kb-add-form input, .kb-add-form textarea, .kb-add-form select {
+            background: #060911;
+            border: 1px solid #334155;
+            color: #f1f5f9;
+            padding: 8px 10px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            outline: none;
+            width: 100%;
+        }
+        .kb-add-form textarea { resize: vertical; min-height: 80px; font-family: inherit; }
+        .kb-add-form input:focus, .kb-add-form textarea:focus { border-color: #6366f1; }
+
+        .file-drop-zone {
+            border: 2px dashed #4338ca;
+            background: rgba(67, 56, 202, 0.08);
+            border-radius: 8px;
+            padding: 12px 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 3px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: center;
+        }
+        .file-drop-zone:hover, .file-drop-zone.dragover {
+            border-color: #818cf8;
+            background: rgba(99, 102, 241, 0.15);
+        }
+        .file-drop-zone.has-file {
+            border-color: #10b981;
+            background: rgba(16, 185, 129, 0.1);
+        }
+        .file-clear-btn {
+            background: rgba(239, 68, 68, 0.2);
+            border: 1px solid rgba(239, 68, 68, 0.4);
+            color: #fca5a5;
+            font-size: 0.68rem;
+            padding: 2px 7px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 4px;
+        }
+        .file-clear-btn:hover { background: rgba(239, 68, 68, 0.35); }
+
+        .btn-add-doc {
+            background: #4f46e5;
+            color: #fff;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 0.78rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .btn-add-doc:hover { background: #4338ca; }
+        .btn-add-doc:disabled { background: #334155; color: #94a3b8; cursor: not-allowed; }
+
+        .btn-reset-kb {
+            background: #1e293b;
+            color: #94a3b8;
+            border: 1px solid #334155;
+            padding: 6px 10px;
+            border-radius: 6px;
+            font-size: 0.72rem;
+            cursor: pointer;
+            transition: 0.2s;
+            margin-top: 6px;
+        }
+        .btn-reset-kb:hover { background: #334155; color: #fff; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Top Navigation Header -->
+        <header>
+            <div class="header-brand">
+                <div class="brand-title">
+                    <span class="brand-icon">📚</span>
+                    <div class="brand-text">
+                        <h1>GenAI Studio</h1>
+                        <p>Retrieval-Augmented Generation (RAG Studio)</p>
+                    </div>
+                </div>
+                <div class="brand-badge">Vector RAG • Live</div>
+            </div>
+
+            <!-- Single Line Navigation Row -->
+            <nav class="nav-groups">
+                <div class="nav-category">
+                    <span class="cat-label">GenAI:</span>
+                    <a href="/chat/" class="nav-tab">🌐 Online</a>
+                    <a href="/chat/offline/" class="nav-tab">🦙 Offline</a>
+                </div>
+                <div class="nav-category">
+                    <span class="cat-label">Agentic Online:</span>
+                    <a href="/chat/agent/limited/" class="nav-tab">🛠️ Limited</a>
+                    <a href="/chat/agent/universal/" class="nav-tab">🖥️ Universal</a>
+                </div>
+                <div class="nav-category">
+                    <span class="cat-label">Agentic Offline:</span>
+                    <a href="/chat/agent/offline/" class="nav-tab">🛡️ Local Agent</a>
+                </div>
+                <div class="nav-category">
+                    <span class="cat-label">MCP:</span>
+                    <a href="/chat/mcp/gmail/" class="nav-tab">🔌 MCP Studio</a>
+                </div>
+                <div class="nav-category">
+                    <span class="cat-label">RAG:</span>
+                    <a href="/chat/rag/" class="nav-tab active">📚 RAG Studio</a>
+                </div>
+            </nav>
+        </header>
+
+        <!-- Sub-Header Toolbar -->
+        <div class="rag-subnav">
+            <div class="rag-stats">
+                <span>📚 Indexed Documents: <strong id="docCount" style="color: #818cf8;">{{ total_docs }}</strong></span>
+                <span>•</span>
+                <span>✂️ Knowledge Chunks: <strong id="chunkCount" style="color: #38bdf8;">{{ total_chunks }}</strong></span>
+            </div>
+            <button class="btn-toggle-kb" onclick="toggleKbSidebar()">
+                <span>📁 Knowledge Base</span>
+                <span id="kbToggleIcon">◀</span>
+            </button>
+        </div>
+
+        <!-- Main Workspace -->
+        <div class="workspace">
+            <div class="chat-section">
+                <div id="chatBox">
+                    <div class="msg-group ai">
+                        <div class="ai-card">
+                            <div class="ai-answer">👋 Welcome to <strong>RAG Studio</strong>!
+<br><br>
+This module demonstrates <strong>Retrieval-Augmented Generation (RAG)</strong> from basic principles:
+1. <strong>Document Ingestion & Chunking</strong>: Documents are split into semantic overlapping text chunks.
+2. <strong>Vector Similarity Search</strong>: User queries are matched against chunk embeddings using Cosine Similarity to retrieve the Top-K relevant passages.
+3. <strong>Context Prompt Injection</strong>: The LLM is provided with the retrieved passages to answer accurately with bracketed citations [1], [2] without hallucination.
+<br><br>
+📁 <em><strong>Default Project Documents Loaded:</strong> All files located in the project <code>documents/</code> directory (including <code>resume.pdf</code>) are automatically parsed and indexed into the Knowledge Base by default! Click any question chip below or drop new files into the folder.</em></div>
+                        </div>
+                    </div>
+                    <div id="loading" class="typing-loader">🔍 Searching vector knowledge base and synthesizing grounded answer...</div>
+                </div>
+
+                <!-- Resume Prompt Tray -->
+                <div class="prompt-tray">
+                    <div class="prompt-chip" onclick="fillPrompt('What is the candidate name, relevant experience, and career objective in the resume?')">👤 Profile & Summary</div>
+                    <div class="prompt-chip" onclick="fillPrompt('Show all technical skillsets, backend frameworks, databases, and tools in the resume.')">🛠️ Technical Skillsets</div>
+                    <div class="prompt-chip" onclick="fillPrompt('Summarize the candidate work history, companies (Infosys, Cholamandalam, Ford), and key responsibilities.')">💼 Experience & Projects</div>
+                    <div class="prompt-chip" onclick="fillPrompt('What are the contact details (email, phone, LinkedIn) and educational qualifications in the resume?')">📞 Contact & Education</div>
+                </div>
+
+                <!-- Input Bar -->
+                <div class="input-bar">
+                    <input type="text" id="chatInput" class="chat-input" placeholder="Ask a question grounded in the knowledge base..." onkeydown="if(event.key==='Enter') sendRagQuery()">
+                    <button id="sendBtn" class="send-btn" onclick="sendRagQuery()">Ask RAG ➤</button>
+                </div>
+            </div>
+
+            <!-- Knowledge Base Sidebar -->
+            <div id="kbSidebar" class="kb-sidebar">
+                <div class="kb-header" style="display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <h3>📁 Knowledge Base</h3>
+                        <span style="font-size: 0.68rem; color: #818cf8;">Folder: <code>GENAI/documents/</code></span>
+                    </div>
+                    <button type="button" onclick="reloadFolderDocs()" style="background: rgba(99,102,241,0.15); border: 1px solid rgba(99,102,241,0.3); color: #c7d2fe; border-radius: 6px; padding: 4px 8px; font-size: 0.72rem; cursor: pointer;" title="Reload all documents from project documents/ folder">🔄 Reload</button>
+                </div>
+                <div class="kb-body">
+                    <!-- Add Document Form -->
+                    <div class="kb-add-form">
+                        <span style="font-size: 0.78rem; font-weight: 700; color: #818cf8;">➕ Ingest New Document</span>
+
+                        <!-- File Upload Box -->
+                        <input type="file" id="docFileInput" accept=".pdf,.docx,.doc,.txt,.md,.csv,.json" style="display: none;" onchange="onFileSelected(event)">
+                        <div id="fileDropZone" class="file-drop-zone" onclick="document.getElementById('docFileInput').click()">
+                            <span style="font-size: 1.3rem;">📄</span>
+                            <span id="fileDropText" style="font-size: 0.78rem; color: #cbd5e1; font-weight: 500;">Click to upload PDF, Word (.docx), or text file</span>
+                            <span id="fileDropSubtext" style="font-size: 0.68rem; color: #64748b;">Supports .pdf, .docx, .txt, .md, .csv</span>
+                            <button type="button" id="fileClearBtn" class="file-clear-btn" style="display: none;" onclick="clearSelectedFile(event)">✕ Remove file</button>
+                        </div>
+
+                        <input type="text" id="docTitleInput" placeholder="Document Title (auto-filled if file chosen)">
+                        <select id="docCategoryInput">
+                            <option value="General">Category: General</option>
+                            <option value="Policy">Category: Policy & HR</option>
+                            <option value="Engineering">Category: Engineering</option>
+                            <option value="Product">Category: Product Specs</option>
+                        </select>
+                        <textarea id="docContentInput" placeholder="Or paste document text here directly..."></textarea>
+                        <button id="btnIngest" class="btn-add-doc" onclick="submitNewDocument()">Chunk & Index Document</button>
+                    </div>
+
+                    <!-- Document List -->
+                    <span style="font-size: 0.74rem; font-weight: 700; color: #64748b; text-transform: uppercase;">Indexed Documents</span>
+                    <div id="kbDocList" style="display: flex; flex-direction: column; gap: 8px;">
+                        {% for doc in documents %}
+                        <div class="kb-doc-card">
+                            <div class="kb-doc-info">
+                                <div class="kb-doc-title">{{ doc.title }}</div>
+                                <div class="kb-doc-meta">{{ doc.category }} • {{ doc.chunks_count }} chunks</div>
+                            </div>
+                            <button class="kb-doc-del" onclick="deleteDoc('{{ doc.id }}')" title="Delete Document">🗑️</button>
+                        </div>
+                        {% empty %}
+                        <div id="emptyDocsMsg" style="padding: 14px 10px; text-align: center; color: #64748b; font-size: 0.78rem; background: #060911; border: 1px dashed #334155; border-radius: 8px;">
+                            No documents in knowledge base.<br>Ingest a document using the form above or drop into <code>documents/</code>.
+                        </div>
+                        {% endfor %}
+                    </div>
+
+                    <div style="display: flex; gap: 8px; margin-top: 10px;">
+                        <button class="btn-reset-kb" style="flex: 1;" onclick="reloadFolderDocs()" title="Reload all files from project documents/ folder">🔄 Reload Folder</button>
+                        <button class="btn-reset-kb" style="flex: 1; border-color: rgba(239,68,68,0.3); color: #f87171;" onclick="clearKnowledgeBase()" title="Clear all documents from knowledge base">🗑️ Clear All</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function fillPrompt(text) {
+            const input = document.getElementById('chatInput');
+            if (input) {
+                input.value = text;
+                input.focus();
+            }
+        }
+
+        function toggleKbSidebar() {
+            const sidebar = document.getElementById('kbSidebar');
+            const icon = document.getElementById('kbToggleIcon');
+            sidebar.classList.toggle('collapsed');
+            icon.textContent = sidebar.classList.contains('collapsed') ? '▶' : '◀';
+        }
+
+        function toggleInspector(id) {
+            const el = document.getElementById(id);
+            if (el) {
+                el.style.display = (el.style.display === 'block') ? 'none' : 'block';
+            }
+        }
+
+        async function sendRagQuery() {
+            const inputEl = document.getElementById('chatInput');
+            const q = inputEl.value.trim();
+            if (!q) return;
+
+            const chatBox = document.getElementById('chatBox');
+            const loading = document.getElementById('loading');
+            const sendBtn = document.getElementById('sendBtn');
+
+            // Render User Bubble
+            const userGroup = document.createElement('div');
+            userGroup.className = 'msg-group user';
+            userGroup.innerHTML = `<div class="user-bubble">${escapeHtml(q)}</div>`;
+            chatBox.insertBefore(userGroup, loading);
+
+            inputEl.value = '';
+            inputEl.disabled = true;
+            sendBtn.disabled = true;
+            loading.style.display = 'block';
+            chatBox.scrollTop = chatBox.scrollHeight;
+
+            try {
+                const res = await fetch(`/chat/rag/api?q=${encodeURIComponent(q)}&k=3`);
+                const data = await res.json();
+                loading.style.display = 'none';
+
+                const aiGroup = document.createElement('div');
+                aiGroup.className = 'msg-group ai';
+
+                // Build Chunks HTML
+                let chunksHtml = '';
+                if (data.retrieved_chunks && data.retrieved_chunks.length > 0) {
+                    chunksHtml += '<div class="chunks-container">';
+                    chunksHtml += `<div class="chunks-header"><span>🔍 Retrieved Context (${data.retrieved_chunks.length} Top-K Chunks):</span><span>Vector Cosine Match</span></div>`;
+                    data.retrieved_chunks.forEach((chunk, idx) => {
+                        chunksHtml += `
+                            <div class="chunk-card">
+                                <div class="chunk-meta">
+                                    <span><strong>[${idx + 1}]</strong> ${escapeHtml(chunk.doc_title)}</span>
+                                    <span class="chunk-match-badge">${chunk.match_percentage}% Match</span>
+                                </div>
+                                <div>${escapeHtml(chunk.text)}</div>
+                            </div>
+                        `;
+                    });
+                    chunksHtml += '</div>';
+                }
+
+                // Augmented Prompt Inspector
+                const inspectorId = `insp_${Date.now()}`;
+                const inspectorHtml = `
+                    <div class="inspector-box">
+                        <div class="inspector-toggle" onclick="toggleInspector('${inspectorId}')">
+                            <span>🧪 Inspect Augmented Prompt Injected into LLM</span>
+                            <span>▾</span>
+                        </div>
+                        <div id="${inspectorId}" class="inspector-content">${escapeHtml(data.augmented_prompt || '')}</div>
+                    </div>
+                `;
+
+                // Meta Pill
+                const metaHtml = `
+                    <div class="rag-exec-meta">
+                        <span>⚡ ${escapeHtml(data.engine || 'RAG Engine')}</span>
+                        <span>•</span>
+                        <span>⏱️ ${data.latency_ms || 0}ms</span>
+                        <span>•</span>
+                        <span>📊 ${data.total_chunks_scanned || 0} chunks scanned</span>
+                    </div>
+                `;
+
+                aiGroup.innerHTML = `
+                    <div class="ai-card">
+                        <div class="ai-answer">${renderMarkdown(data.reply || data.error)}</div>
+                        ${chunksHtml}
+                        ${inspectorHtml}
+                        ${metaHtml}
+                    </div>
+                `;
+                chatBox.insertBefore(aiGroup, loading);
+
+            } catch (err) {
+                loading.style.display = 'none';
+                const aiGroup = document.createElement('div');
+                aiGroup.className = 'msg-group ai';
+                aiGroup.innerHTML = `<div class="ai-card" style="border-color:#ef4444; color:#fca5a5;">Error running RAG pipeline: ${escapeHtml(err.message)}</div>`;
+                chatBox.insertBefore(aiGroup, loading);
+            } finally {
+                inputEl.disabled = false;
+                sendBtn.disabled = false;
+                inputEl.focus();
+                chatBox.scrollTop = chatBox.scrollHeight;
+            }
+        }
+
+        function onFileSelected(event) {
+            const file = event.target.files[0];
+            const dropZone = document.getElementById('fileDropZone');
+            const dropText = document.getElementById('fileDropText');
+            const dropSubtext = document.getElementById('fileDropSubtext');
+            const clearBtn = document.getElementById('fileClearBtn');
+            const titleInput = document.getElementById('docTitleInput');
+
+            if (file) {
+                dropZone.classList.add('has-file');
+                dropText.textContent = `📄 ${file.name}`;
+                dropSubtext.textContent = `Size: ${(file.size / 1024).toFixed(1)} KB • Ready to chunk`;
+                clearBtn.style.display = 'inline-block';
+
+                if (!titleInput.value.trim()) {
+                    const baseName = file.name.substring(0, file.name.lastIndexOf('.')) || file.name;
+                    titleInput.value = baseName.replace(/[-_]/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+                }
+            }
+        }
+
+        function clearSelectedFile(event) {
+            if (event) event.stopPropagation();
+            const fileInput = document.getElementById('docFileInput');
+            const dropZone = document.getElementById('fileDropZone');
+            const dropText = document.getElementById('fileDropText');
+            const dropSubtext = document.getElementById('fileDropSubtext');
+            const clearBtn = document.getElementById('fileClearBtn');
+
+            fileInput.value = '';
+            dropZone.classList.remove('has-file');
+            dropText.textContent = 'Click to upload PDF, Word (.docx), or text file';
+            dropSubtext.textContent = 'Supports .pdf, .docx, .txt, .md, .csv';
+            clearBtn.style.display = 'none';
+        }
+
+        async function submitNewDocument() {
+            const fileInput = document.getElementById('docFileInput');
+            const file = fileInput.files[0];
+            let title = document.getElementById('docTitleInput').value.trim();
+            const category = document.getElementById('docCategoryInput').value;
+            const content = document.getElementById('docContentInput').value.trim();
+            const btnIngest = document.getElementById('btnIngest');
+
+            if (!file && !content) {
+                alert('Please upload a PDF or text file, or paste document text.');
+                return;
+            }
+
+            if (!title && file) {
+                const baseName = file.name.substring(0, file.name.lastIndexOf('.')) || file.name;
+                title = baseName.replace(/[-_]/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+            }
+
+            if (!title) {
+                alert('Please enter a document title.');
+                return;
+            }
+
+            btnIngest.disabled = true;
+            const prevText = btnIngest.textContent;
+            btnIngest.textContent = '⏳ Ingesting & Chunking...';
+
+            try {
+                const formData = new FormData();
+                formData.append('action', 'add_document');
+                formData.append('title', title);
+                formData.append('category', category);
+                if (file) {
+                    formData.append('file', file);
+                } else {
+                    formData.append('content', content);
+                }
+
+                const res = await fetch('/chat/rag/api', {
+                    method: 'POST',
+                    body: formData
+                });
+                const data = await res.json();
+                if (data.status === 'ok') {
+                    clearSelectedFile();
+                    document.getElementById('docTitleInput').value = '';
+                    document.getElementById('docContentInput').value = '';
+                    document.getElementById('chunkCount').textContent = data.total_chunks;
+                    document.getElementById('docCount').textContent = data.total_docs;
+                    refreshDocumentList();
+                    alert(`Document "${title}" ingested successfully into ${data.chunks_created} chunks!`);
+                } else {
+                    alert('Error: ' + (data.error || 'Failed to add document'));
+                }
+            } catch (err) {
+                alert('Network error: ' + err.message);
+            } finally {
+                btnIngest.disabled = false;
+                btnIngest.textContent = prevText;
+            }
+        }
+
+        async function reloadFolderDocs() {
+            try {
+                const res = await fetch('/chat/rag/api?action=reload');
+                const data = await res.json();
+                if (data.status === 'ok') {
+                    document.getElementById('chunkCount').textContent = data.total_chunks || 0;
+                    document.getElementById('docCount').textContent = data.total_docs || (data.documents || []).length;
+                    renderDocumentList(data.documents || []);
+                }
+            } catch (err) {
+                alert('Error reloading documents folder: ' + err.message);
+            }
+        }
+
+        async function clearKnowledgeBase() {
+            if (!confirm('Clear all indexed documents and chunks from the knowledge base?')) return;
+            try {
+                const res = await fetch('/chat/rag/api?action=clear');
+                const data = await res.json();
+                if (data.status === 'ok') {
+                    document.getElementById('chunkCount').textContent = data.total_chunks || 0;
+                    document.getElementById('docCount').textContent = (data.documents || []).length;
+                    renderDocumentList(data.documents || []);
+                }
+            } catch (err) {
+                alert('Error clearing knowledge base: ' + err.message);
+            }
+        }
+
+        async function deleteDoc(docId) {
+            if (!confirm('Delete this document and all its indexed chunks?')) return;
+            try {
+                const res = await fetch(`/chat/rag/api?action=delete_document&doc_id=${encodeURIComponent(docId)}`);
+                const data = await res.json();
+                if (data.status === 'ok') {
+                    document.getElementById('chunkCount').textContent = data.total_chunks;
+                    document.getElementById('docCount').textContent = data.total_docs;
+                    renderDocumentList(data.documents);
+                } else {
+                    alert('Error: ' + (data.error || 'Failed to delete document'));
+                }
+            } catch (err) {
+                alert('Network error: ' + err.message);
+            }
+        }
+
+        async function refreshDocumentList() {
+            try {
+                const res = await fetch('/chat/rag/api?action=documents');
+                const data = await res.json();
+                if (data.documents) {
+                    renderDocumentList(data.documents);
+                }
+            } catch (err) {}
+        }
+
+        function renderDocumentList(docs) {
+            const listEl = document.getElementById('kbDocList');
+            if (!docs || docs.length === 0) {
+                listEl.innerHTML = `
+                    <div id="emptyDocsMsg" style="padding: 14px 10px; text-align: center; color: #64748b; font-size: 0.78rem; background: #060911; border: 1px dashed #334155; border-radius: 8px;">
+                        No documents in knowledge base.<br>Ingest a document using the form above.
+                    </div>
+                `;
+                return;
+            }
+            listEl.innerHTML = docs.map(d => `
+                <div class="kb-doc-card">
+                    <div class="kb-doc-info">
+                        <div class="kb-doc-title">${escapeHtml(d.title)}</div>
+                        <div class="kb-doc-meta">${escapeHtml(d.category)} • ${d.chunks_count} chunks</div>
+                    </div>
+                    <button class="kb-doc-del" onclick="deleteDoc('${d.id}')" title="Delete Document">🗑️</button>
+                </div>
+            `).join('');
+        }
+
+        function escapeHtml(text) {
+            if (!text) return '';
+            return String(text)
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+
+        function renderMarkdown(text) {
+            if (!text) return '';
+            let html = escapeHtml(text);
+            html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+            html = html.replace(/\*(.*?)\*/g, '<em>$1</em>');
+            html = html.replace(/`([^`]+)`/g, '<code style="background:#1e293b; color:#38bdf8; padding:2px 5px; border-radius:4px; font-family:\'Fira Code\',monospace; font-size:0.85em;">$1</code>');
+            html = html.replace(/\[(\d+)\]/g, '<span style="background:rgba(99,102,241,0.25); color:#a5b4fc; padding:1px 5px; border-radius:4px; font-weight:700; font-size:0.85em;">[$1]</span>');
+            return html;
+        }
+
+        // Drag and drop support for file drop zone
+        window.addEventListener('DOMContentLoaded', () => {
+            const dropZone = document.getElementById('fileDropZone');
+            const fileInput = document.getElementById('docFileInput');
+            if (dropZone && fileInput) {
+                ['dragenter', 'dragover'].forEach(name => {
+                    dropZone.addEventListener(name, (e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        dropZone.classList.add('dragover');
+                    });
+                });
+                ['dragleave', 'drop'].forEach(name => {
+                    dropZone.addEventListener(name, (e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        dropZone.classList.remove('dragover');
+                    });
+                });
+                dropZone.addEventListener('drop', (e) => {
+                    if (e.dataTransfer && e.dataTransfer.files.length > 0) {
+                        fileInput.files = e.dataTransfer.files;
+                        onFileSelected({ target: fileInput });
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>

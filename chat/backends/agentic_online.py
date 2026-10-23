@@ -11,7 +11,7 @@ import subprocess
 from google import genai
 from google.genai import types
 
-MODEL_NAME = os.getenv("GEMINI_MODEL", "gemini-3-flash-preview")
+MODEL_NAME = os.getenv("GEMINI_MODEL", "gemini-2.5-flash")
 UNIVERSAL_AGENT_PASSWORD = os.getenv("UNIVERSAL_AGENT_PASSWORD", "admin123")
 
 

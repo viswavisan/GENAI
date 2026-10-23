@@ -148,3 +148,205 @@ class GenAIStudioGroupedTests(TestCase):
         self.assertEqual(res2.status_code, 200)
         res3 = self.client.get('/chat/agent/')
         self.assertEqual(res3.status_code, 200)
+
+    # =================================================================
+    # GROUP 4: Gmail Model Context Protocol (Gmail MCP Studio)
+    # =================================================================
+    @patch('chat.views.search_emails')
+    def test_group4_gmail_mcp_ui(self, mock_search):
+        mock_search.return_value = [{"id": "1", "sender": "test@gmail.com", "subject": "Test", "timestamp": "Now"}]
+        res = self.client.get('/chat/mcp/gmail/')
+        self.assertEqual(res.status_code, 200)
+        self.assertContains(res, "Gmail MCP Studio")
+        self.assertContains(res, "Gmail-MCP-Server")
+
+    def test_group4_gmail_mcp_catalog_api(self):
+        res = self.client.get('/chat/mcp/gmail/api?action=catalog')
+        self.assertEqual(res.status_code, 200)
+        data = res.json()
+        tool_names = [t["name"] for t in data["tools"]]
+        self.assertIn("search_emails", tool_names)
+        self.assertIn("read_email", tool_names)
+        self.assertIn("send_email", tool_names)
+        self.assertIn("create_draft", tool_names)
+
+    @patch('chat.backends.gmail_mcp_client.call_gmail_tool')
+    def test_group4_gmail_mcp_search_and_read(self, mock_call):
+        mock_call.return_value = {
+            "tool": "search_emails", "output": "Security alert", "is_error": False,
+            "rpc_request": {"method": "tools/call"}, "rpc_response": {"result": {}}
+        }
+        res1 = self.client.get('/chat/mcp/gmail/api?action=call_tool&name=search_emails&args={"query":"security"}')
+        self.assertEqual(res1.status_code, 200)
+        self.assertIn("Security alert", res1.json()["output"])
+
+    @patch('chat.backends.gmail_mcp_client.call_gmail_tool')
+    def test_group4_gmail_mcp_send_and_draft(self, mock_call):
+        mock_call.return_value = {
+            "tool": "send_email", "output": "Real email sent via Gmail SMTP.", "is_error": False,
+            "rpc_request": {"method": "tools/call"}, "rpc_response": {"result": {}}
+        }
+        res1 = self.client.get('/chat/mcp/gmail/api?action=call_tool&name=send_email&args={"recipient":"test@demo.com","subject":"Test","body":"Hello"}')
+        self.assertEqual(res1.status_code, 200)
+        self.assertIn("sent", res1.json()["output"].lower())
+
+    @patch('chat.backends.gmail_mcp_client.read_gmail_resource')
+    def test_group4_gmail_mcp_read_resource(self, mock_read):
+        mock_read.return_value = {"uri": "gmail://inbox/unread", "content": "Real Gmail Unread Count: 5", "rpc_request": {}, "rpc_response": {}}
+        res = self.client.get('/chat/mcp/gmail/api?action=read_resource&uri=gmail://inbox/unread')
+        self.assertEqual(res.status_code, 200)
+        self.assertIn("Real Gmail", res.json()["content"])
+
+    @patch('chat.backends.gmail_mcp_client.run_gmail_agent')
+    def test_group4_gmail_mcp_agent_query(self, mock_agent):
+        mock_agent.return_value = {
+            "reply": "Found security emails", "steps": [{"tool": "search_emails"}], "type": "gmail_mcp_agent"
+        }
+        res = self.client.get('/chat/mcp/gmail/api?q=search+emails')
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(res.json()["type"], "gmail_mcp_agent")
+
+    # =================================================================
+    # GROUP 5: RAG Studio (Retrieval-Augmented Generation)
+    # =================================================================
+    def test_group5_rag_ui(self):
+        res = self.client.get('/chat/rag/')
+        self.assertEqual(res.status_code, 200)
+        self.assertContains(res, "RAG Studio")
+        self.assertContains(res, "Retrieval-Augmented Generation")
+
+    def test_group5_rag_direct_shortcut_ui(self):
+        res = self.client.get('/rag/')
+        self.assertEqual(res.status_code, 200)
+        self.assertContains(res, "RAG Studio")
+
+    def test_group5_rag_documents_api(self):
+        # Reset defaults so resume.pdf is loaded
+        from chat.backends.rag_service import kb
+        kb.reset_defaults()
+        res = self.client.get('/chat/rag/api?action=documents')
+        self.assertEqual(res.status_code, 200)
+        data = res.json()
+        self.assertIn("documents", data)
+        self.assertGreaterEqual(data["total_docs"], 1)
+        self.assertTrue(any("Resume" in d["title"] for d in data["documents"]))
+
+    def test_group5_rag_add_delete_and_clear_documents(self):
+        # Clear KB first to test add/delete isolation
+        self.client.post('/chat/rag/api', data={"action": "clear"})
+
+        # Ingest custom document
+        res_add = self.client.post('/chat/rag/api', data={
+            "action": "add_document",
+            "title": "Quantum Computing FAQ",
+            "content": "Quantum supremacy refers to quantum computers solving problems beyond classical computers."
+        })
+        self.assertEqual(res_add.status_code, 200)
+        self.assertEqual(res_add.json()["status"], "ok")
+        doc_id = res_add.json()["document"]["id"]
+
+        # Verify it was added
+        res_docs = self.client.get('/chat/rag/api?action=documents')
+        titles = [d["title"] for d in res_docs.json()["documents"]]
+        self.assertIn("Quantum Computing FAQ", titles)
+
+        # Delete document
+        res_del = self.client.get(f'/chat/rag/api?action=delete_document&doc_id={doc_id}')
+        self.assertEqual(res_del.status_code, 200)
+        self.assertEqual(res_del.json()["status"], "ok")
+        self.assertEqual(res_del.json()["total_docs"], 0)
+
+        # Clear/Reset KB
+        res_clear = self.client.post('/chat/rag/api', data={"action": "clear"})
+        self.assertEqual(res_clear.status_code, 200)
+        self.assertEqual(res_clear.json()["status"], "ok")
+        self.assertEqual(res_clear.json()["total_docs"], 0)
+
+        # Restore defaults
+        from chat.backends.rag_service import kb
+        kb.reset_defaults()
+
+    def test_group5_rag_file_upload(self):
+        from django.core.files.uploadedfile import SimpleUploadedFile
+        # Upload a text document file
+        uploaded_txt = SimpleUploadedFile("cloud_architecture.txt", b"Cloud microservices communicate via REST and gRPC.")
+        res = self.client.post('/chat/rag/api', data={
+            "action": "add_document",
+            "category": "Engineering",
+            "file": uploaded_txt
+        })
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(res.json()["status"], "ok")
+        self.assertIn("Cloud Architecture", res.json()["document"]["title"])
+
+        # Clean up
+        self.client.post('/chat/rag/api', data={"action": "clear"})
+        from chat.backends.rag_service import kb
+        kb.reset_defaults()
+
+    def test_group5_rag_docx_upload(self):
+        import io
+        import docx
+        from django.core.files.uploadedfile import SimpleUploadedFile
+
+        # Create in-memory docx
+        doc = docx.Document()
+        doc.add_heading('Technical Specifications', level=1)
+        doc.add_paragraph('System requires Python 3.11+, Django 4.2, and PostgreSQL.')
+        buf = io.BytesIO()
+        doc.save(buf)
+        buf.seek(0)
+
+        uploaded_docx = SimpleUploadedFile(
+            "technical_specs.docx",
+            buf.read(),
+            content_type="application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+        )
+        res = self.client.post('/chat/rag/api', data={
+            "action": "add_document",
+            "category": "Engineering",
+            "file": uploaded_docx
+        })
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(res.json()["status"], "ok")
+        self.assertIn("Technical Specs", res.json()["document"]["title"])
+
+        # Clean up
+        self.client.post('/chat/rag/api', data={"action": "clear"})
+        from chat.backends.rag_service import kb
+        kb.reset_defaults()
+
+    @patch('chat.views.execute_rag_pipeline')
+    def test_group5_rag_query_api(self, mock_rag):
+        mock_rag.return_value = {
+            "reply": "RAG chunks text into manageable segments for vector indexing [1].",
+            "retrieved_chunks": [
+                {
+                    "rank": 1,
+                    "doc_id": "doc_rag_fundamentals",
+                    "doc_title": "RAG Architecture",
+                    "chunk_id": "doc_rag_fundamentals_chunk_0",
+                    "text": "Chunking splits long documents into smaller semantic windows.",
+                    "similarity": 0.88,
+                    "method": "embedding_cosine"
+                }
+            ],
+            "stats": {
+                "top_k": 3,
+                "retrieved_count": 1,
+                "similarity_mode": "gemini-embedding-001 (cosine)",
+                "generation_mode": "gemini-2.5-flash",
+                "retrieval_ms": 12.5,
+                "generation_ms": 150.2
+            },
+            "prompt_injected": "System Prompt with Grounded Context"
+        }
+        res = self.client.get('/chat/rag/api?q=What+is+chunking&k=3')
+        self.assertEqual(res.status_code, 200)
+        data = res.json()
+        self.assertIn("reply", data)
+        self.assertEqual(len(data["retrieved_chunks"]), 1)
+        self.assertIn("[1]", data["reply"])
+        self.assertEqual(data["stats"]["similarity_mode"], "gemini-embedding-001 (cosine)")
+
+
